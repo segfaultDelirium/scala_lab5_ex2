@@ -1,10 +1,17 @@
 trait HumanComps {
 
-  def now(): Boolean
-  def aboutNow(): Boolean
-  def momentAgo(): Boolean
-  // def earlier(): Boolean
-  // def later(): Boolean
+  def timeDifference(): Int
+
+  def now(): Boolean = timeDifference() == 0
+
+  def aboutNow(): Boolean = timeDifference() < 9
+
+  def momentAgo(): Boolean = timeDifference() < 26
+
+  def earlier(): Boolean = timeDifference() < 100
+
+  def later(): Boolean = timeDifference() >= 100
+
   def human: String = {
     if now() then {
       return "now"
@@ -15,12 +22,12 @@ trait HumanComps {
     if momentAgo() then {
       return "a moment ago"
     }
-    // if earlier() then {
-    //   return "earlier"
-    // }
-    // if later() then {
-    //   return "later"
-    // }
+    if earlier() then {
+      return "earlier"
+    }
+    if later() then {
+      return "later"
+    }
 
     "unkown"
   }
@@ -28,50 +35,13 @@ trait HumanComps {
 }
 
 class TDist(val t: Int) {
-  def now(): Boolean = {
-    t == 0
-  }
-  def aboutNow(): Boolean = {
-    t < 9
-  }
-  def momentAgo(): Boolean = {
-    t < 26
-  }
-
+  def timeDifference() = t - 0
 }
 
-case class H(val d: Int) extends TDist(d) with HumanComps {
-  // def now() = {
-  //   d == 0
-  // }
-
-  // def aboutNow(): Boolean = {
-  //   d.abs < 9
-  // }
-
-  // def momentAgo(): Boolean = {
-  //   d < 26
-  // }
-}
+case class H(val d: Int) extends TDist(d) with HumanComps {}
 
 case class TPeriod(val start: Int, val stop: Int) {
-
-  // def difference = stop - start
-  def tDist = TDist(stop - start)
-  def now() = {
-    // TDist(difference).now()
-    tDist.now()
-  }
-
-  def aboutNow(): Boolean = {
-    // TDist(difference).aboutNow()
-    tDist.aboutNow()
-  }
-
-  def momentAgo(): Boolean = {
-    // TDist.momentAgo(stop - start)
-    tDist.momentAgo()
-  }
+  def timeDifference() = stop - start
 }
 
 @main def hello: Unit = {
